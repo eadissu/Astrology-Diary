@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+	<title>The Astrology Diary</title>
+</head>
+
+<body>
+
+  <!-- Ignore! For page formating. -->
+  <div id="misc"></div>
+
+  <!-- Left side (Nav and Title) -->
+  <div id="nav" >
+    <div class="content">
+      <h1>The Astrology Diary</h1>
+      <p>
+        Welcome to the Astrology Diary!
+        <br>
+        Calculate Astrology Charts and keep them in your Diary ✨
+      </p>
+  
+      <!-- Links -->
+      <a href="/addSign">Add an Entry</a> <a href="/getHoroscope">Daily Horoscope</a>
+      
+      <hr>
+      <p id="credit"> &copy; Created by: Micheal, Kalkidan & Edna</p>
+    </div>
+  </div>
+
+  <!-- Right side (pages) -->
+  <div id="page">
+    <div class="page-content">
+      <%- horoscopeSign %>
+      <!-- All Zodiacs will be here! -->
+      <div class="Zodiac"></div>
+    </div>
+  </div>
+
+  <!-- Ignore! Next page totally for aesthetics -->
+  <div id="next-page"><div class="page"></div></div>
+
+  <!---
+	<h1>Welcome to Terps Supermarket</h1>
+
+	To see our catalog select <a href="/catalog">Catalog</a><br><br>
+	To place an order select <a href="/order">Place Order</a><br>
+  -->
+</body>
+
+</html>
+
+
+<!-- hi-->

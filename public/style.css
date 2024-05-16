@@ -1,0 +1,206 @@
+/* Varaibles for General Website Themes: */
+:root {
+
+  /* Main Page Colors */
+  --grey: #605e5b; /* Website Background and Most Text */
+  --sand: #f2ece0; /* Dairy Pages and Some Text */
+  --pink: #d88382; /* Links and Buttons */
+  --blue: #77a5b0;
+  --purple: #b3a9cd;
+  --book-crack: #b7b2a9;
+
+  /* Zodiac Themed Colors */
+  --aries: #ff5353;
+  --taurus: #81c282;
+  --gemini: #ffe153;
+  --cancer: #c8c8c8;
+  --leo: #ffa35b;
+  --virgo: #af8466;
+  --libra: #fdbdbe;
+  --scorpio: #242424;
+  --sagittarius: #c1adf0;
+  --capricorn: #666b68;
+  --aquarius: #80bfea;
+  --pisces: #a1e2c4;
+
+  /* Default Font Sizes */
+  --header-size: 6.5vw;
+  --h2-size: 3vw;
+  --text-size: 1.5vw;
+}
+
+*, html{
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+html{
+  width: 100vw;
+  height: 100vh;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--grey);
+  display: grid;
+  grid-template-columns: 40% 50% 10%;
+  grid-template-rows: 20% 80%;
+  grid-template-areas: 
+    "empty empty empty"
+    "nav diary next-page"
+}
+
+h1 {
+  font-size: var(--header-size);
+  font-family: "Playfair Display", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+  
+  color: var(--purple);
+  line-height: 5vw;
+  text-align: center;
+
+  margin-bottom: 3vw;
+}
+
+h1 {
+  font-size: var(--header-size);
+  font-family: "Playfair Display", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+  
+  color: var(--purple);
+  line-height: 6vw;
+  text-align: center;
+  margin-bottom: 4vw;
+
+  transform: rotate(-15deg); /* Rotate the element 45 degrees counterclockwise */
+}
+
+h2 {
+  font-size: var(--h2-size);
+  font-family: "Playfair Display", monospace;
+  color: var(--grey);
+}
+
+form {
+  color: var(--grey);
+  font-family: "Lato", sans-serif;
+}
+
+p {
+  font-size: var(--text-size);
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+
+  line-height: 2.5vw;
+}
+
+input {
+  padding: .25vw;
+  background-color: var(--sand);
+  border: solid 1px var(--book-crack);
+  border-radius: .5vw;
+  margin-top: 1vw;
+  margin-left: 1vw;
+  
+}
+
+
+#nav p {
+  color: var(--sand);
+}
+
+#credit p {
+  color: #b6b1a8;
+}
+
+a {
+  font-size: var(--text-size);
+  font-family: "Playfair Display", monospace;
+  font-weight: bold;
+  text-decoration: none;
+
+  color: var(--pink);
+}
+
+a:not(:first-of-type) {
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: solid var(--pink) 2px;
+}
+
+div {
+  margin: 0;
+  border: 0;
+  padding: 1rem;
+}
+
+#misc {
+  grid-area: empty;
+}
+
+/* Nav Div */
+#nav {
+  grid-area: nav;
+  
+  display: flex;
+  justify-content: center; /* Horizontally center the content */
+}
+
+/* Page Div */
+#page {
+  grid-area: diary;
+  background-color: var(--sand); /* In case gradient doesnt work!*/
+  background: linear-gradient(to right, var(--sand) 0%, var(--sand) 85%, var(--book-crack) 95%, var(--book-crack) 100%);
+  border-radius: 0 7vw 0 0;
+  box-shadow: -1vw 1vw 0 #b6b1a8,
+    -2vw 2vw 0 #8e8a83; /* Second shadow */
+
+  display: flex;
+  justify-content: center; /* Horizontally center the content */
+  align-items: center; /* Vertically center the content */
+}
+
+#page_content{
+  width: 80%;
+}
+
+#next-page {
+  grid-area: next-page;
+  background-color: var(--sand); /* In case gradient doesnt work!*/
+  background: linear-gradient(to right, var(--book-crack) 0%, var(--book-crack) 20%, var(--sand) 70%, var(--sand) 100%);
+  border-radius: 7vw 0 0 0;
+}
+
+.content {
+  width: 80%;
+}
+
+/* Form Buttons */
+
+.submit, .cancel {
+  font-family: "Playfair Display", monospace;
+  font-weight: bold;
+  color: var(--sand);
+  font-size: 1.25vw;
+  border-radius: .75vw;
+  padding: .25vw 2vw;
+  margin-left: 0;
+  margin-right: .25vw;
+}
+
+.submit {
+  background-color: var(--pink);
+  border-color: var(--pink);
+}
+
+.cancel{
+  background-color: var(--blue);
+  border-color: var(--blue);
+}
+
+
