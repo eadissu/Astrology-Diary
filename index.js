@@ -78,17 +78,26 @@ app.post("/signAddedConfirmation", async (request, response) => {
 
 app.post("/dailyHoroscope", (request, response) => {
   // API Key should be stored in an environment variable for security
-  const { horoscopeSign } = request.body;
+  const { horoscopeSign } = (request.body);
 
-  const URL = 'https://aztro.sameerkumar.website/?sign=aries&day=today';
-  fetch(URL, {
-      method: 'POST'
-  })
-  .then(response => response.json())
-  .then(json => {
-      const date = json.current_date;
-      console.log(date);
-  });
+  console.log(horoscopeSign.toLowerCase());
+
+const url = "https://best-daily-astrology-and-horoscope-api.p.rapidapi.com/api/Detailed-Horoscope/?zodiacSign=" + horoscopeSign.toLowerCase();
+const options = {
+	method: 'GET',
+	headers: {
+		'x-rapidapi-key': 'e8ac1c1b64mshf75bb5062a0cdefp1e2e92jsnc70e311540a7',
+		'x-rapidapi-host': 'best-daily-astrology-and-horoscope-api.p.rapidapi.com',
+		'Content-Type': 'application/json'
+	}
+};
+
+fetch(url, options)
+	.then(response => response.text())
+	.then(result => console.log(result))
+	.catch(error => console.error('Error:', error));
+
+
   response.render("dailyHoroscope",{horoscopeSign})
   
 });
@@ -140,36 +149,5 @@ function createEntree(name, sign) {*/
 */
 
 
-const encodedParams = new URLSearchParams();
-encodedParams.set('name', 'Aakash');
-encodedParams.set('birthdate', '15-02-1989');
-encodedParams.set('birthtime', '12:32');
-encodedParams.set('City', 'DELHI');
-
-const url = 'https://kundli1.p.rapidapi.com/';
-const options = {
-  method: 'POST',
-  headers: {
-    'content-type': 'application/x-www-form-urlencoded',
-    'X-RapidAPI-Key': 'e8ac1c1b64mshf75bb5062a0cdefp1e2e92jsnc70e311540a7',
-    'X-RapidAPI-Host': 'kundli1.p.rapidapi.com'
-  },
-  body: encodedParams.toString(),
-};
-
-async function fetchData() {
-  try {
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-fetchData();
 
 
