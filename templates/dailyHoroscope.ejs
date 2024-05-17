@@ -28,7 +28,7 @@
       </p>
   
       <!-- Links -->
-      <a href="/addSign">Add an Entry</a> <a href="/getHoroscope">Daily Horoscope</a>
+      <a href="/">Back to Diary</a> <a href="/addSign">Add an Entry</a>
       
       <hr>
       <p id="credit"> &copy; Created by: Micheal, Kalkidan & Edna</p>
@@ -38,21 +38,24 @@
   <!-- Right side (pages) -->
   <div id="page">
     <div class="page-content">
-      <%- horoscopeSign %>
-      <!-- All Zodiacs will be here! -->
-      <div class="Zodiac"></div>
+      <h3>Hello, <span style="color: <%= signColor %>;"> <%= sign %> </span>!</h3>
+      <p class="text"><%- horoscope %></p>
+      <br>
+      <p class="text" class = "answer">
+        Color of the Day:
+        <span class="circled" style = `color: ${<%- color %>}` ><%- color %></span>
+      </p>
+
+      <p class="text" class = "answer">
+        Lucky Number of the Day:
+        <span class="circled"><%- number %></span>
+      </p>
     </div>
   </div>
 
   <!-- Ignore! Next page totally for aesthetics -->
   <div id="next-page"><div class="page"></div></div>
 
-  <!---
-	<h1>Welcome to Terps Supermarket</h1>
-
-	To see our catalog select <a href="/catalog">Catalog</a><br><br>
-	To place an order select <a href="/order">Place Order</a><br>
-  -->
 </body>
 
 </html>

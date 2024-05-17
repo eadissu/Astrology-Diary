@@ -1,5 +1,19 @@
 const zodiac_image = ["aries.png", "taurus.png", "gemini.png", "cancer.png", "leo.png", "virgo.png", "libra.png", "scorpio.png", "sagittarius.png", "capricorn.png", "sagittarius.png"];
-const zodiac_color = ["var(--aries)", "var(--taurus)", "var(--gemini)", "var(--cancer)", "var(--leo)", "var(--virgo)", "var(--libra)", "var(--scorpio)", "var(--capricorn)", "var(--aquarius)", "var(--pisces)"];
+const zodiacColors = {
+  "aries": "#ff5353",
+  "taurus": "#81c282",
+  "gemini": "#ffe153",
+  "cancer": "#c8c8c8",
+  "leo": "#ffa35b",
+  "virgo": "#af8466",
+  "libra": "#fdbdbe",
+  "scorpio": "#242424",
+  "sagittarius": "#c1adf0",
+  "capricorn": "#666b68",
+  "aquarius": "#80bfea",
+  "pisces": "#a1e2c4"
+};
+
 
 const express = require("express");
 const app = express();
@@ -9,7 +23,8 @@ const uri = "mongodb+srv://mwang17:8nzObH3KJ65sV1Gu@cluster0.edwq9kb.mongodb.net
 
 require("dotenv").config({ path: path.resolve(__dirname, 'credentialsDontPost/.env') });
 const databaseAndCollection = {db: "CMSC335_HOROSCOPES", collection:"userHoroscopes"};
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+
+
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -44,7 +59,19 @@ process.stdin.on("readable", () => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public")); 
 
+
+
+
 app.get("/", (request, response) => {
+
+  new_html = "";
+
+  /* Generate the horoscopes! */
+
+  new_html += createEntrees(client);
+
+  console.log(new_html);
+
   response.render("index")
 });
 
@@ -62,6 +89,8 @@ app.post("/signAddedConfirmation", async (request, response) => {
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
   try {
     await client.connect();
+
+    /* Calculate how long DB is. If DB size = 3, Do not add new entree. Instead, next page should suggest deleting an entree */
 
     sign = calculateSign(dob)
     let newSign = {name, dob, sign};
@@ -81,25 +110,53 @@ app.post("/dailyHoroscope", (request, response) => {
   const { horoscopeSign } = (request.body);
 
   console.log(horoscopeSign.toLowerCase());
-
-const url = "https://best-daily-astrology-and-horoscope-api.p.rapidapi.com/api/Detailed-Horoscope/?zodiacSign=" + horoscopeSign.toLowerCase();
-const options = {
-	method: 'GET',
-	headers: {
-		'x-rapidapi-key': 'e8ac1c1b64mshf75bb5062a0cdefp1e2e92jsnc70e311540a7',
-		'x-rapidapi-host': 'best-daily-astrology-and-horoscope-api.p.rapidapi.com',
-		'Content-Type': 'application/json'
-	}
-};
-
-fetch(url, options)
-	.then(response => response.text())
-	.then(result => console.log(result))
-	.catch(error => console.error('Error:', error));
+  let sign = horoscopeSign.toLowerCase();
+  //let horoscope = createHoroscope(sign);
 
 
-  response.render("dailyHoroscope",{horoscopeSign})
-  
+  const url = "https://best-daily-astrology-and-horoscope-api.p.rapidapi.com/api/Detailed-Horoscope/?zodiacSign=" + sign;
+  const options = {
+    method: 'GET',
+    headers: {
+      //'x-rapidapi-key': 'e8ac1c1b64mshf75bb5062a0cdefp1e2e92jsnc70e311540a7',
+      'X-RapidAPI-Key': '7d34f1f7ddmshc64f8ebdf309bdap114feajsn28d81e683802',
+      'x-rapidapi-host': 'best-daily-astrology-and-horoscope-api.p.rapidapi.com',
+      'Content-Type': 'application/json'
+    }
+  };
+
+  fetch(url, options)
+  .then(res => res.json())
+  .then(result => {
+    console.log(result);
+    // Assuming result has a property named prediction which contains the horoscope text
+    const prediction = result.prediction;
+    const segments = prediction.split('\n'); // Split by newline characters
+    
+    if (segments.length > 2) {
+      const selectedSegments = [segments[0], segments[1], segments[segments.length - 1]];
+      const formattedPrediction = selectedSegments.join(' ');
+      response.render("dailyHoroscope", {
+        sign: horoscopeSign,
+        signColor: zodiacColors[sign],
+        horoscope: formattedPrediction,
+        color: result.color,
+        number: result.number
+      });
+    } else {
+      response.render("dailyHoroscope", {
+        sign: horoscopeSign,
+        signColor: zodiacColors[sign],
+        horoscope: prediction,
+        color: result.color,
+        number: result.number
+      });
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    response.status(500).send('Something went wrong!');
+  });
 });
 
 
@@ -141,13 +198,37 @@ const calculateSign = (dateInput) => {
 }
 
 /* Function that converts Requested DB information into Diary Entrees on the Index Page */
-/*
-function createEntree(name, sign) {*/
-  
-  /* <div class="entree"> <img="${}"> <h3>${name}<h3><h4>${sign}</h4><div>*/
-/*}
-*/
 
 
+async function createEntrees(allZodiacs) {
 
+  new_html = ""
+  try {
+    await client.connect();
+    
+    const data = client.db(allZodiacs.db)
+      .collection(allZodiacs.collection)
+      .find();
 
+    // Traverse through the cursor
+    await data.forEach(document => {
+      console.log(document);
+      // traverse through all results
+      new_html += `<div class="entree">`;
+      new_html += `<img src="/public/images/${document.sign}.png" style="background-color: pink;">`;
+      new_html += `<div>`;
+      new_html +=  `<h3>${document.name}</h3>`;
+      new_html += `<p>${document.sign}</p>`;
+      new_html += `<button>Delete</button>`;
+      new_html += `</div>`;
+    });
+    
+  } catch (error) {
+    console.error('Error retrieving documents:', error);
+    // Handle error
+  } finally {
+    await client.close();
+  }
+
+  return new_html;
+}

@@ -26,6 +26,7 @@
   /* Default Font Sizes */
   --header-size: 6.5vw;
   --h2-size: 3vw;
+  --h3-size: 2.25vw;
   --text-size: 1.5vw;
 }
 
@@ -85,6 +86,13 @@ h2 {
   color: var(--grey);
 }
 
+h3 {
+  font-size: var(--h3-size);
+  font-family: "Playfair Display", monospace;
+  color: var(--grey);
+}
+
+
 form {
   color: var(--grey);
   font-family: "Lato", sans-serif;
@@ -99,7 +107,7 @@ p {
   line-height: 2.5vw;
 }
 
-input {
+input, select {
   padding: .25vw;
   background-color: var(--sand);
   border: solid 1px var(--book-crack);
@@ -180,6 +188,28 @@ div {
   width: 80%;
 }
 
+.answer {
+  font-weight: bold;
+}
+
+.circled {
+  font-size: 1.25vw;
+  border-radius: .75vw;
+  padding: .25vw 2vw;
+  margin-left: .25vw;
+  background-color: var(--book-crack);
+  border-color: var(--book-crack);
+}
+
+.text {
+  font-size: 1.25vw;
+  color: var(--grey);
+}
+
+.page-content {
+  margin: 1vw;
+}
+
 /* Form Buttons */
 
 .submit, .cancel {
@@ -193,6 +223,7 @@ div {
   margin-right: .25vw;
 }
 
+
 .submit {
   background-color: var(--pink);
   border-color: var(--pink);
@@ -204,3 +235,34 @@ div {
 }
 
 
+/* Entree Stuff */
+.entree p {
+  font-weight: bold;
+  color: var(--book-crack);
+  font-style: italic;
+}
+
+.entree img {
+  float: left;
+  width: 9vw;
+  height: 9vw;
+  border-radius: 100%;
+  border: none;
+}
+
+.entree div {
+  float: inline-end;
+}
+
+button {
+  padding: .25vw .5vw;
+  background-color: var(--book-crack);
+  border: solid 1px var(--book-crack);
+  color: var(--sand);
+  border-radius: .5vw;
+
+  width: 6vw;
+
+  font-family: "Playfair Display", monospace;
+  
+}
