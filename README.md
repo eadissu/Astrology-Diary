@@ -1,4 +1,4 @@
-Submitted by: 
+Submitted by: Edna Adissu
 Group Members: Kalkidan Asgedom, Michael Wang, Edna Adissu
 App Description: this is a daily horiscope applicaion which allows users to input and delete zodiac entries into the database as well as get their daily horoscope based on their zidoac sign
 YouTube Video Link: [A link](https://youtu.be/qGHK9zcOMDE)
