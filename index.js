@@ -24,6 +24,7 @@ const uri = "mongodb+srv://mwang17:8nzObH3KJ65sV1Gu@cluster0.edwq9kb.mongodb.net
 require("dotenv").config({ path: path.resolve(__dirname, 'credentialsDontPost/.env') });
 const databaseAndCollection = {db: "CMSC335_HOROSCOPES", collection:"userHoroscopes"};
 
+ /*const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });*/
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -32,6 +33,9 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+
+let count = 0;
+
 
 app.set("views", path.resolve(__dirname, "templates"));
 app.set("view engine", "ejs");
@@ -62,17 +66,17 @@ app.use(express.static("public"));
 
 
 
-app.get("/", (request, response) => {
+app.get("/", async (request, response) => {
 
-  new_html = "";
+  try {
+    const newHtml = await createEntrees(databaseAndCollection); // Await the promise returned by createEntrees
+    console.log(newHtml);
+    response.render("index" ,{ entreesHtml: newHtml}); // Pass the HTML to the template
+  } catch (error) {
+    console.error('Error in getting entrees:', error);
+    response.status(500).send('Internal Server Error');
+  }
 
-  /* Generate the horoscopes! */
-
-  new_html += createEntrees(client);
-
-  console.log(new_html);
-
-  response.render("index")
 });
 
 app.get("/addSign", (request, response) => {
@@ -83,21 +87,28 @@ app.get("/getSign", (request, response) => {
   response.render("getSign")
 });
 
-app.post("/signAddedConfirmation", async (request, response) => {
-  response.render("signAddedConfirmation")
+app.post("/signConfirmation", async (request, response) => {
+  
   const {name, dob} = request.body
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
   try {
     await client.connect();
 
     /* Calculate how long DB is. If DB size = 3, Do not add new entree. Instead, next page should suggest deleting an entree */
-
-    sign = calculateSign(dob)
-    let newSign = {name, dob, sign};
-    console.log(newSign)
+    const docCount = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).countDocuments();
     
-    const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(newSign);
-    console.log(`entry made${result.insertedId}`);
+    count = docCount
+    if (docCount >= 3){ 
+      response.render("signConfirmation",{output:"Entries are at max capacity. Please delete at least one. "})
+    } else {
+      sign = calculateSign(dob)
+      let newSign = {name, dob, sign};
+      console.log(newSign)
+      const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(newSign);
+      console.log(`entry made${result.insertedId}`);
+      response.render("signConfirmation",{output:"Horoscope Added! 🙂 "})
+    }
+
   } catch (e) {
       await console.error(e);
   } finally {
@@ -200,28 +211,52 @@ const calculateSign = (dateInput) => {
 /* Function that converts Requested DB information into Diary Entrees on the Index Page */
 
 
-async function createEntrees(allZodiacs) {
+async function createEntrees() {
 
   new_html = ""
   try {
     await client.connect();
-    
-    const data = client.db(allZodiacs.db)
-      .collection(allZodiacs.collection)
+    const data = client.db(databaseAndCollection.db)
+      .collection(databaseAndCollection.collection)
       .find();
 
     // Traverse through the cursor
+    let index = 0;
     await data.forEach(document => {
-      console.log(document);
+
+      console.log("THIS!: " + document);
       // traverse through all results
       new_html += `<div class="entree">`;
-      new_html += `<img src="/public/images/${document.sign}.png" style="background-color: pink;">`;
+      console.log(`Color: ${zodiacColors[document.sign.toLowerCase()]}`);
+      new_html += `<img src="/images/${document.sign}.png" style="background-color: ${zodiacColors[document.sign.toLowerCase()]};">`;
       new_html += `<div>`;
-      new_html +=  `<h3>${document.name}</h3>`;
+      new_html += `<h3>${document.name}</h3>`;
       new_html += `<p>${document.sign}</p>`;
-      new_html += `<button>Delete</button>`;
-      new_html += `</div>`;
+      // Create a form to delete the entry
+      new_html += `<form action="/deleteEntry" method="POST" style="display:inline;">`;
+      new_html += `<input type="hidden" name="name" value="${document.name}">`;
+      new_html += `<button type="submit" style=" cursor:pointer;">Delete</button>`;
+      new_html += `</form>`;
+      new_html += `</div></div>`;
+      
+      index ++;
     });
+
+    count = index;
+    /* 
+  
+*/
+
+
+    /* <div class="entree">
+        
+          <img src="/public/images/gemini.png" style="background-color: pink;">
+          <div>
+            <h3>Jane Doe</h3>
+            <p>Aries</p>
+            <button>Delete</button>
+          </div>
+        </div>*/
     
   } catch (error) {
     console.error('Error retrieving documents:', error);
@@ -232,3 +267,33 @@ async function createEntrees(allZodiacs) {
 
   return new_html;
 }
+
+async function deleteOne(client, databaseAndCollection, targetName) {
+  const result = await client.db(databaseAndCollection.db)
+                             .collection(databaseAndCollection.collection)
+                             .deleteOne({ name: targetName });
+  if (result.deletedCount === 1) {
+      console.log(`Successfully deleted one document with name ${targetName}`);
+  } else {
+      console.log(`No documents matched the query. Deleted 0 documents.`);
+  }
+}
+
+
+
+
+app.post("/deleteEntry", async (request, response) => {
+    const { name } = request.body;
+    console.log(name);
+    try {
+        await client.connect();
+        await deleteOne(client, databaseAndCollection, name);
+        response.redirect("/");
+    } catch (error) {
+        console.error('Error deleting document:', error);
+        response.status(500).send('Internal Server Error');
+    } finally {
+        await client.close();
+    }
+});
+

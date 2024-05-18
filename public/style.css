@@ -197,8 +197,8 @@ div {
   border-radius: .75vw;
   padding: .25vw 2vw;
   margin-left: .25vw;
-  background-color: var(--book-crack);
-  border-color: var(--book-crack);
+  /*background-color: var(--book-crack);
+  border-color: var(--book-crack);*/
 }
 
 .text {
@@ -244,14 +244,21 @@ div {
 
 .entree img {
   float: left;
-  width: 9vw;
-  height: 9vw;
+  width: 8vw;
+  height: 8vw;
   border-radius: 100%;
   border: none;
 }
 
 .entree div {
-  float: inline-end;
+  float: left;
+  margin-right: 10px; /* Adjust spacing between floated elements */
+}
+
+
+.entree {
+  margin-bottom: 5vw;
+  display: block;
 }
 
 button {
@@ -265,4 +272,9 @@ button {
 
   font-family: "Playfair Display", monospace;
   
+}
+
+button :hover {
+  color: #b7b2a9;
+  background-color: #8c8985;
 }
