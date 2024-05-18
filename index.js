@@ -70,7 +70,7 @@ app.get("/", async (request, response) => {
 
   try {
     const newHtml = await createEntrees(databaseAndCollection); // Await the promise returned by createEntrees
-    console.log(newHtml);
+    //console.log(newHtml);
     response.render("index" ,{ entreesHtml: newHtml}); // Pass the HTML to the template
   } catch (error) {
     console.error('Error in getting entrees:', error);
@@ -103,7 +103,7 @@ app.post("/signConfirmation", async (request, response) => {
     } else {
       sign = calculateSign(dob)
       let newSign = {name, dob, sign};
-      console.log(newSign)
+      //console.log(newSign)
       const result = await client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).insertOne(newSign);
       console.log(`entry made${result.insertedId}`);
       response.render("signConfirmation",{output:"Horoscope Added! 🙂 "})
@@ -120,7 +120,7 @@ app.post("/dailyHoroscope", (request, response) => {
   // API Key should be stored in an environment variable for security
   const { horoscopeSign } = (request.body);
 
-  console.log(horoscopeSign.toLowerCase());
+  //console.log(horoscopeSign.toLowerCase());
   let sign = horoscopeSign.toLowerCase();
   //let horoscope = createHoroscope(sign);
 
@@ -130,6 +130,7 @@ app.post("/dailyHoroscope", (request, response) => {
     method: 'GET',
     headers: {
       //'x-rapidapi-key': 'e8ac1c1b64mshf75bb5062a0cdefp1e2e92jsnc70e311540a7',
+      //'X-RapidAPI-Key': '7d34f1f7ddmshc64f8ebdf309bdap114feajsn28d81e683802',
       'X-RapidAPI-Key': '7d34f1f7ddmshc64f8ebdf309bdap114feajsn28d81e683802',
       'x-rapidapi-host': 'best-daily-astrology-and-horoscope-api.p.rapidapi.com',
       'Content-Type': 'application/json'
@@ -139,7 +140,7 @@ app.post("/dailyHoroscope", (request, response) => {
   fetch(url, options)
   .then(res => res.json())
   .then(result => {
-    console.log(result);
+    //console.log(result);
     // Assuming result has a property named prediction which contains the horoscope text
     const prediction = result.prediction;
     const segments = prediction.split('\n'); // Split by newline characters
@@ -224,10 +225,10 @@ async function createEntrees() {
     let index = 0;
     await data.forEach(document => {
 
-      console.log("THIS!: " + document);
+      //console.log("THIS!: " + document);
       // traverse through all results
       new_html += `<div class="entree">`;
-      console.log(`Color: ${zodiacColors[document.sign.toLowerCase()]}`);
+      //console.log(`Color: ${zodiacColors[document.sign.toLowerCase()]}`);
       new_html += `<img src="/images/${document.sign}.png" style="background-color: ${zodiacColors[document.sign.toLowerCase()]};">`;
       new_html += `<div>`;
       new_html += `<h3>${document.name}</h3>`;
@@ -284,7 +285,7 @@ async function deleteOne(client, databaseAndCollection, targetName) {
 
 app.post("/deleteEntry", async (request, response) => {
     const { name } = request.body;
-    console.log(name);
+    //console.log(name);
     try {
         await client.connect();
         await deleteOne(client, databaseAndCollection, name);
@@ -297,3 +298,21 @@ app.post("/deleteEntry", async (request, response) => {
     }
 });
 
+
+/* Shuts down server */
+
+function promptUser() {
+
+  function handleInput(input) {
+    const command = input.trim();
+    
+    if (command.toLowerCase() === 'stop') {
+      console.log('Shutting down the server');
+      process.exit(0);
+    }
+  }
+
+  process.stdin.once('data', handleInput);  // Attach event listener
+}
+
+promptUser();
